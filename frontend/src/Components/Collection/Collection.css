@@ -1,0 +1,80 @@
+.collection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgb(30, 30, 61);
+    gap: 10px;
+    width: 100%;
+}
+
+.sorting-controls {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    font-weight: 700;
+    color: black;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 600px;
+    padding: 10px;
+}
+
+.sorting-controls select {
+    margin-top: -20px;
+    opacity: 100%;
+    background: white;
+    border: none;
+    padding: 5px;
+    border-radius: 10px;
+}
+
+.collection h1 { 
+    margin-top: 50px;
+    color: white;
+    font-size: 35px;
+    font-weight: 600;
+}
+
+.collection hr {
+    margin-top: 5px;
+    width: 80%;
+    max-width: 600px;
+    height: 1px;
+    border-radius: 3px;
+    background: whitesmoke;
+}
+
+.collections-items {
+    display: grid; /* Use grid layout */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive grid */
+    gap: 20px 30px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    color: white;
+    font-weight: 600;
+    padding: 0 20px;
+}
+
+/* Style for individual Item components */
+.item {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    transition: transform 0.2s;
+    display: flex; /* Use flexbox for item */
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center contents */
+    width: 100%;
+}
+
+/* Responsive image styles */
+.item img {
+    max-width: 100%; /* Make image responsive */
+    max-height: 200px; /* Set a max height to control size */
+    object-fit: contain; /* Maintain aspect ratio */
+    border-radius: 10px; /* Optional: round the image corners */
+}
+
+.item:hover {
+    transform: scale(1.05);
+}
