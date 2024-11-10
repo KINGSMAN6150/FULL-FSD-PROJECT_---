@@ -11,14 +11,12 @@ const ProductDisplay = () => {
     const [product, setProduct] = useState(null);
     const [currentBid, setCurrentBid] = useState(null);
     const [error, setError] = useState(null);
-    const { addToCart } = useContext(ShopContext);
+    const { addToCart, user } = useContext(ShopContext); // Get user from context
     const [isModalOpen, setModalOpen] = useState(false);
 
-    // Socket connection for real-time bid updates
     useEffect(() => {
         const socket = io("http://localhost:5000");
 
-        // Listen for bid updates
         socket.on("bidUpdate", (data) => {
             if (data.name === productName) {
                 setCurrentBid(data.currentBid);
@@ -28,7 +26,6 @@ const ProductDisplay = () => {
         return () => socket.disconnect();
     }, [productName]);
 
-    // Fetch product details initially
     useEffect(() => {
         const fetchProduct = async () => {
             try {
@@ -37,7 +34,7 @@ const ProductDisplay = () => {
                 const data = await response.json();
                 if (data) {
                     setProduct(data);
-                    setCurrentBid(data.currentBid); // Ensure this points to the current bid
+                    setCurrentBid(data.currentBid || data.startingBid);
                 } else {
                     setError('Product not found');
                 }
@@ -49,11 +46,41 @@ const ProductDisplay = () => {
         fetchProduct();
     }, [productName]);
 
-    if (error) return <div>{error}</div>;
-    if (!product) return <div>Loading...</div>;
+    const handleAddToReminder = async () => {
+        if (!user) {
+            alert('Please login to set reminders');
+            return;
+        }
 
-    const handleAddToReminder = () => {
         addToCart(product.name);
+        
+        try {
+            const response = await fetch('http://localhost:3000/api/email/send-reminder', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    productName: product.name,
+                    currentBid: currentBid,
+                    endTime: product.auction_end_time,
+                    userEmail: user.email // Use email from logged-in user
+                }),
+            });
+
+            const data = await response.json();
+            
+            if (response.ok) {
+                console.log('Reminder email sent successfully');
+                alert('Reminder set and email sent!');
+            } else {
+                console.error('Failed to send reminder:', data.message);
+                alert(`Failed to send reminder email: ${data.message}`);
+            }
+        } catch (error) {
+            console.error('Error sending reminder email:', error);
+            alert('Failed to send reminder email. Please try again.');
+        }
     };
 
     const handleBid = async (amount) => {
@@ -66,7 +93,7 @@ const ProductDisplay = () => {
 
             if (response.ok) {
                 const { newBid } = await response.json();
-                setCurrentBid(newBid); // Update the current bid on successful bid
+                setCurrentBid(newBid);
             } else {
                 console.error("Failed to place bid");
             }
@@ -74,6 +101,9 @@ const ProductDisplay = () => {
             console.error("Error placing bid:", error);
         }
     };
+
+    if (error) return <div>{error}</div>;
+    if (!product) return <div>Loading...</div>;
 
     return (
         <div>
@@ -91,9 +121,9 @@ const ProductDisplay = () => {
                     <label>Product Model:</label>
                     <p>{product.model}</p>
                     <label>Product Starting Bid:</label>
-                    <p>${product.startingBid}</p> {/* Display starting bid */}
+                    <p>${product.startingBid}</p>
                     <label>Current Bid:</label>
-                    <p>${currentBid}</p> {/* Display current bid */}
+                    <p>${currentBid}</p>
                     <label>Product Condition:</label>
                     <p>{product.condition}</p>
                     <label>Product Auction End Time:</label>
@@ -111,7 +141,7 @@ const ProductDisplay = () => {
                 isOpen={isModalOpen} 
                 onClose={() => setModalOpen(false)} 
                 onBid={handleBid} 
-                currentBid={currentBid} // Pass current bid to modal
+                currentBid={currentBid}
             />
         </div>
     );
