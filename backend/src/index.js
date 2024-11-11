@@ -2,6 +2,8 @@
 const express = require('express');
 const connectDB = require('../config/db.js');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 require('dotenv').config();
 
 // Initialize express app
@@ -9,15 +11,20 @@ const app = express();  // Move this line up, before using app
 
 // Import routes
 const emailRoutes = require('../routes/emailRoutes');
+const collectionRoutes = require('../routes/collection.js'); // Adjust the path if necessary
 
 // Middleware
 app.use(cors());
+app.use(bodyParser.json());
 app.use(express.json());
 
 // Define Routes
 app.use('/api/email', emailRoutes);
 app.use('/api/auth', require('../routes/auth.js'));
 app.use('/api/email', require('../routes/emailRoutes'));
+
+app.use('/api/collection', collectionRoutes);
+
 
 // Set the MongoDB URI directly
 const MONGO_URI = "mongodb://localhost:27017/auction";

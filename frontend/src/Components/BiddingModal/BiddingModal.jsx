@@ -1,8 +1,7 @@
-// BiddingModal.js
 import React, { useState } from 'react';
 import './BiddingModal.css';
 
-const BiddingModal = ({ isOpen, onClose, onBid, currentBid }) => {
+const BiddingModal = ({ isOpen, onClose, onBid, currentBid, startingBid }) => {
     const [bidAmount, setBidAmount] = useState('');
     const [error, setError] = useState('');
 
@@ -12,8 +11,9 @@ const BiddingModal = ({ isOpen, onClose, onBid, currentBid }) => {
         // Convert bidAmount to a number and validate that it’s greater than currentBid
         const parsedBidAmount = Number(bidAmount);
 
-        if (isNaN(parsedBidAmount) || parsedBidAmount <= currentBid) {
-            setError(`Your bid must be greater than the current bid of $${currentBid}`);
+        // Ensure bid is greater than the current bid or the starting bid
+        if (isNaN(parsedBidAmount) || parsedBidAmount <= Math.max(currentBid, startingBid)) {
+            setError("Your bid must be greater than the current bid of $${Math.max(currentBid, startingBid)}");
             return;
         }
 
@@ -38,7 +38,7 @@ const BiddingModal = ({ isOpen, onClose, onBid, currentBid }) => {
                             value={bidAmount} 
                             onChange={(e) => setBidAmount(e.target.value)} 
                             required 
-                            min={currentBid + 1} // Ensure input starts above the current bid
+                            min={Math.max(currentBid, startingBid) + 1} // Ensure input starts above the higher of current or starting bid
                         />
                     </label>
                     {error && <p className="error">{error}</p>} {/* Display error if any */}
