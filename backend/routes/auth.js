@@ -4,7 +4,6 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-// Add this to your existing auth.js file
 router.post('/signup', async (req, res) => {
     const { name, email, phone, password } = req.body;
 
@@ -58,7 +57,6 @@ router.post('/login', async (req, res) => {
             { expiresIn: '24h' }
         );
 
-        // Send user data (excluding password) and token
         res.json({
             token,
             id: user._id,

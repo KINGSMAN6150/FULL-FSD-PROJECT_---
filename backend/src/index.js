@@ -1,28 +1,21 @@
-// server.js or app.js
 const express = require('express');
 const connectDB = require('../config/db.js');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-// Initialize express app
-const app = express();  // Move this line up, before using app
+const app = express();  
 
 // Import routes
 const emailRoutes = require('../routes/emailRoutes');
-const collectionRoutes = require('../routes/collection.js'); // Adjust the path if necessary
-
+const collectionRoutes = require('../routes/collection.js'); 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
 app.use(express.json());
 
 // Define Routes
-app.use('/api/email', emailRoutes);
 app.use('/api/auth', require('../routes/auth.js'));
 app.use('/api/email', require('../routes/emailRoutes'));
-
 app.use('/api/collection', collectionRoutes);
 
 
@@ -47,7 +40,7 @@ const PORT = 3000;
 
 app.listen(PORT, (err) => {
     if (err) {
-        console.error("Failed to start the serv         2227777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777777222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222er:", err.message);
+        console.error("Failed to start the server:", err.message);
     } else {
         console.log(`Server is running on port ${PORT}`);
     }

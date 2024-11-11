@@ -71,7 +71,8 @@ const Buy = () => {
                             id={item.id}
                             name={item.name}
                             brand={item.brand}
-                            starting_bid={item.starting_bid}
+                            starting_bid={item.startingBid}
+                            cuurrent_bid={item.currentBid}
                             auction_end_time={item.auction_end_time}
                             condition={item.condition}
                             image={item.image}

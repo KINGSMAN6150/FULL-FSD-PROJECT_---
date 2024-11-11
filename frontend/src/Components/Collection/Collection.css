@@ -65,6 +65,7 @@
     flex-direction: column; /* Stack children vertically */
     align-items: center; /* Center contents */
     width: 100%;
+    color: white;
 }
 
 /* Responsive image styles */
